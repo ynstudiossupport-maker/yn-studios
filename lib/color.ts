@@ -1,0 +1,15 @@
+const HEX = /^#[0-9a-f]{6}$/i;
+
+export function safeColor(value: string | undefined, fallback = "#FEE51C") {
+  return value && HEX.test(value.trim()) ? value.trim() : fallback;
+}
+
+/** Dark or light text, whichever reads better on the given background colour. */
+export function onColor(hex: string) {
+  const n = parseInt(hex.slice(1), 16);
+  const [r, g, b] = [(n >> 16) & 255, (n >> 8) & 255, n & 255].map((v) => {
+    const c = v / 255;
+    return c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4);
+  });
+  return 0.2126 * r + 0.7152 * g + 0.0722 * b > 0.4 ? "#0a0a0a" : "#ffffff";
+}

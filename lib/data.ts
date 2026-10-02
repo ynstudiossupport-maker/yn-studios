@@ -1,5 +1,6 @@
 import { demoMembers, demoProjects } from "./demo-data";
 import { defaultSettings } from "./default-settings";
+import { normalizeSettings } from "./normalize";
 import { getSupabase } from "./supabase";
 import type { Member, Project, SiteSettings } from "./types";
 
@@ -24,5 +25,5 @@ export async function getSiteSettings(): Promise<SiteSettings> {
   if (!supabase) return defaultSettings;
   const { data, error } = await supabase.from("site_settings").select("content").eq("id", "default").maybeSingle();
   if (error || !data?.content) return defaultSettings;
-  return { ...defaultSettings, ...(data.content as Partial<SiteSettings>) };
+  return normalizeSettings(data.content as Record<string, unknown>);
 }

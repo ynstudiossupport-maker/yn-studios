@@ -1,6 +1,6 @@
 # YN Studios
 
-Mobile-first portfolio site for YN Studios, built with Next.js 16, React 19 and Supabase.
+Dark, cinematic portfolio site for YN Studios, built with Next.js 16, React 19 and Supabase.
 
 ## Local setup
 
@@ -24,17 +24,27 @@ The `yn-assets` public Storage bucket is created by `supabase.sql`. Admins can u
 
 ## Admin capabilities
 
-- Edit homepage headline, intro and hero image
-- Edit services
-- Edit Projects heading and intro
-- Edit About heading, body, image and approach steps
-- Edit contact information
-- Add/edit/delete projects
-- Add/edit/delete members
-- Upload images directly to Supabase Storage
-- Reorder projects and members
-- Mark projects as featured
+Everything on the public site is editable at `/admin`:
+
+- **Separate admin pages**, grouped in the sidebar: *Branding* (Logo & colour, Navigation), *Homepage* (Hero, Brands we've worked with, Services, Statement banner, Projects, About, Team, Contact), *More* (Contact form, Footer & contact details, Google & SEO). Each page edits only its own text and images.
+- **Show/hide:** the brands strip, services section and banner have on/off switches. Clearing a label or button text hides that element.
+- **Projects and Team pages** also hold the project and member lists: add, edit, delete, reorder, feature, and upload images.
+- Multi-line fields (headlines, slogans, handwritten overlays) use one line per row.
+- Lists and cards can be reordered with Up/Down and removed.
+
+To make a new piece of text editable, add a default in `lib/default-settings.ts`, a type in `lib/types.ts`, and an entry in `lib/site-fields.ts` — the admin form is generated from that list.
+
+## Enquiries via WhatsApp
+
+When someone sends the contact form, a WhatsApp chat opens to your number with their name, email, chosen service and message already typed in; they only press send. A copy is also saved to `contact_submissions` in Supabase when it is configured. Set the number in **Admin → Contact form → WhatsApp number** (with country code, e.g. `+91 98765 43210`). If it is empty, the Phone number from Footer & contact details is used.
 
 ## Deployment
 
 Push the repository to GitHub and import it into Vercel. Add the two `NEXT_PUBLIC_*` environment variables in Vercel. Do not commit `.env.local`.
+
+## Routes
+
+- `/` single-page site (hero, services, projects, about, team, contact)
+- `/projects` all projects
+- `/team` full team
+- `/admin` content editor

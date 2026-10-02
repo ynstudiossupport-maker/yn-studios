@@ -79,21 +79,21 @@ create policy "Admins update YN assets" on storage.objects for update to authent
 drop policy if exists "Admins delete YN assets" on storage.objects;
 create policy "Admins delete YN assets" on storage.objects for delete to authenticated using (bucket_id = 'yn-assets' and public.is_admin());
 
+-- Site copy. Anything not set here falls back to lib/default-settings.ts.
 insert into public.site_settings (id, content)
 values ('default', jsonb_build_object(
-  'hero_title','We make things worth looking at.',
-  'hero_intro','Photography, reels, Meta ads and websites for brands that care about how they show up.',
-  'hero_image','https://images.unsplash.com/photo-1485846234645-a62644f84728?auto=format&fit=crop&w=2200&q=90',
-  'services',jsonb_build_array('Photography','Reels','Meta Ads','Websites'),
-  'projects_heading','Selected work.',
-  'projects_intro','A considered selection of photography, film, advertising and digital work.',
-  'about_heading','A creative studio focused on real work.',
-  'about_body','We help brands turn good ideas into clear visual stories. From the first frame to the finished website, we keep the work direct, useful and beautifully made.',
-  'about_image','https://images.unsplash.com/photo-1492619375914-88005aa9e8fb?auto=format&fit=crop&w=1600&q=90',
-  'approach',jsonb_build_array('Understand the brief','Make the work','Ship what matters'),
-  'members_heading','People behind YN.',
-  'contact_heading','Let''s work together.',
-  'contact_intro','Have a project in mind? Tell us what you are building and we will take it from there.',
+  'hero_title','Ideas
+Captured
+Brands
+Built',
+  'hero_intro','Photography. Reels. Meta Ads.
+Websites. And more.',
+  'about_heading','Creative minds.
+Real outcomes.',
+  'members_heading','The people
+behind YN',
+  'contact_heading','Let''s create
+together',
   'email','hello@ynstudios.in','phone','+91 98765 43210','location','India','instagram','@yn.studios'
 )) on conflict (id) do nothing;
 
