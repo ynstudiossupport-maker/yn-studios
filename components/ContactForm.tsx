@@ -78,17 +78,29 @@ export default function ContactForm({ text }: { text: FormText }) {
 
   return (
     <form className="contact-form" onSubmit={submit}>
-      <div className="field"><input name="name" placeholder={text.namePlaceholder} aria-label={text.namePlaceholder} required /></div>
-      <div className="field"><input name="email" type="email" placeholder={text.emailPlaceholder} aria-label={text.emailPlaceholder} required /></div>
+      <div className="field-row">
+        <label className="field">
+          <span>{text.namePlaceholder}</span>
+          <input name="name" autoComplete="name" required />
+        </label>
+        <label className="field">
+          <span>{text.emailPlaceholder}</span>
+          <input name="email" type="email" autoComplete="email" required />
+        </label>
+      </div>
       {text.types.length > 0 && (
-        <div className="field">
-          <select name="project_type" defaultValue="" aria-label={text.typePlaceholder}>
-            <option value="" disabled>{text.typePlaceholder}</option>
+        <label className="field">
+          <span>{text.typePlaceholder}</span>
+          <select name="project_type" defaultValue="">
+            <option value="">—</option>
             {text.types.map((type) => <option key={type}>{type}</option>)}
           </select>
-        </div>
+        </label>
       )}
-      <div className="field"><textarea name="message" placeholder={text.messagePlaceholder} aria-label={text.messagePlaceholder} required /></div>
+      <label className="field">
+        <span>{text.messagePlaceholder}</span>
+        <textarea name="message" rows={5} required />
+      </label>
       <button className="btn btn-solid submit" type="submit" disabled={sending}>{sending ? text.sendingLabel : text.submitLabel}</button>
       {status && <p className="form-status" role="status">{status}</p>}
     </form>

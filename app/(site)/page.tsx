@@ -13,6 +13,8 @@ export default async function Home() {
   const featured = projects.filter((project) => project.featured);
   const shown = featured.length ? featured : projects.slice(0, 8);
   const clients = s.clients.filter((client) => client.name || client.logo_url);
+  // Repeat the set so one marquee group is always wider than the screen (seamless loop).
+  const marqueeReps = Math.max(2, Math.ceil(12 / Math.max(1, clients.length)));
 
   return (
     <main>
@@ -45,16 +47,23 @@ export default async function Home() {
         </a>
       </section>
 
-      {/* Clients */}
+      {/* Clients: continuously sliding marquee (right to left) */}
       {s.show_clients && clients.length > 0 && (
         <section className="clients" aria-label="Brands we have worked with">
-          <ul>
-            {clients.map((client, i) => (
-              <li key={`${client.name}-${i}`}>
-                {client.logo_url ? <img src={client.logo_url} alt={client.name} loading="lazy" /> : client.name}
-              </li>
+          <p className="sr-only">{clients.map((client) => client.name).filter(Boolean).join(", ")}</p>
+          <div className="marquee" aria-hidden style={{ ["--marquee-duration" as string]: `${Math.max(24, clients.length * marqueeReps * 3)}s` }}>
+            {[0, 1].map((copy) => (
+              <ul className={`marquee-group${copy ? " copy" : ""}`} key={copy}>
+                {Array.from({ length: marqueeReps }, (_, rep) =>
+                  clients.map((client, i) => (
+                    <li key={`${rep}-${i}`} className={rep || copy ? "dup" : undefined}>
+                      {client.logo_url ? <img src={client.logo_url} alt="" loading="lazy" /> : client.name}
+                    </li>
+                  ))
+                )}
+              </ul>
             ))}
-          </ul>
+          </div>
         </section>
       )}
 
@@ -175,6 +184,8 @@ export default async function Home() {
           <ContactDialog
             label={s.contact_cta_label}
             title={s.form_title}
+            eyebrow={s.contact_eyebrow}
+            intro={s.form_intro}
             email={s.email}
             phone={s.phone}
             location={s.location}

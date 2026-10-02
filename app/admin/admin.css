@@ -74,6 +74,9 @@
 .item-row span{color:#777;font-size:12px}
 .item-actions{display:flex;gap:8px}
 
+.video-preview{width:min(100%,260px);aspect-ratio:9/16;max-height:360px;object-fit:cover;background:#0c0c0c}
+.clear-video{justify-self:start;background:none;border:1px solid #333;color:#d77;padding:9px 12px;cursor:pointer;font-size:12px}
+
 /* ===== Login / setup / loading ===== */
 .admin-loading,.login-page{min-height:100vh;background:#111;color:#eee;display:grid;place-items:center;font-family:Arial,sans-serif}
 .login-box{width:min(420px,calc(100% - 36px));border:1px solid #2b2b2b;padding:30px}
@@ -127,6 +130,7 @@
   .image-field-head{flex-wrap:wrap}
   .image-field img{width:100%}
   .upload-label{padding:12px 14px}
+  .clear-video{padding:12px 14px;min-height:44px}
 
   /* Sticky save */
   .save-bar{bottom:0;margin:0 -16px;padding:12px 16px calc(12px + env(safe-area-inset-bottom));border-top:1px solid #292929;background:rgba(17,17,17,.96);backdrop-filter:blur(10px)}

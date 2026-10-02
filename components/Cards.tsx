@@ -1,24 +1,6 @@
-import type { Member, Project } from "@/lib/types";
-import { Play } from "./Icons";
+import type { Member } from "@/lib/types";
 
-const isVideo = (category: string) => /reel|video|film/i.test(category);
-
-export function ProjectCard({ project, priority = false }: { project: Project; priority?: boolean }) {
-  return (
-    <article className="project-card">
-      <div className="project-card-media">
-        <img src={project.image_url} alt={project.title} loading={priority ? "eager" : "lazy"} />
-        {isVideo(project.category) && (
-          <span className="play-badge" aria-label="Video project">
-            <Play size={16} />
-          </span>
-        )}
-      </div>
-      <h3>{project.title}</h3>
-      {project.description && <p>{project.description}</p>}
-    </article>
-  );
-}
+export { default as ProjectCard } from "./ProjectCard";
 
 export function MemberCard({ member }: { member: Member }) {
   return (

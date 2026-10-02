@@ -44,3 +44,12 @@ export const Linkedin = ({ size = 18, className }: IconProps) => (
     <path d="M8 10.5V16M8 7.8v.01M12 16v-5.5M12 13c0-1.7 1-2.6 2.3-2.6 1.4 0 2 .9 2 2.6v3" />
   </svg>
 );
+export const Mail = ({ size = 18, className }: IconProps) => (
+  <svg {...base(size)} className={className}><rect x="3" y="5" width="18" height="14" rx="2.5" /><path d="m4 7.5 8 6 8-6" /></svg>
+);
+export const Phone = ({ size = 18, className }: IconProps) => (
+  <svg {...base(size)} className={className}><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2Z" /></svg>
+);
+export const MapPin = ({ size = 18, className }: IconProps) => (
+  <svg {...base(size)} className={className}><path d="M12 21s7-6.2 7-11a7 7 0 1 0-14 0c0 4.8 7 11 7 11Z" /><circle cx="12" cy="10" r="2.5" /></svg>
+);

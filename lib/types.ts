@@ -4,6 +4,8 @@ export type Project = {
   category: string;
   year: number;
   image_url: string;
+  /** Optional preview clip (mp4/webm file URL or a YouTube link) that plays on hover. */
+  video_url?: string | null;
   /** Short subtitle shown under the title, e.g. "Fragrance Brand". */
   description?: string | null;
   featured?: boolean;
@@ -98,6 +100,7 @@ export type SiteSettings = {
 
   /* Contact form */
   form_title: string;
+  form_intro: string;
   form_name_placeholder: string;
   form_email_placeholder: string;
   form_type_placeholder: string;

@@ -34,6 +34,14 @@ Everything on the public site is editable at `/admin`:
 
 To make a new piece of text editable, add a default in `lib/default-settings.ts`, a type in `lib/types.ts`, and an entry in `lib/site-fields.ts` — the admin form is generated from that list.
 
+## Project videos (hover to play)
+
+In **Admin → Projects**, edit a project and use **Hover video** to upload a short MP4/WebM clip (up to 50 MB; under 20 MB is best) or paste a video link. On the site the card shows its image; the clip plays silently while the visitor hovers it (mouse) or after a tap (phones), and resets when they leave. YouTube links are supported too. Projects with a video need the `video_url` column, so run this once in the Supabase SQL Editor if your database already exists:
+
+```sql
+alter table public.projects add column if not exists video_url text;
+```
+
 ## Enquiries via WhatsApp
 
 When someone sends the contact form, a WhatsApp chat opens to your number with their name, email, chosen service and message already typed in; they only press send. A copy is also saved to `contact_submissions` in Supabase when it is configured. Set the number in **Admin → Contact form → WhatsApp number** (with country code, e.g. `+91 98765 43210`). If it is empty, the Phone number from Footer & contact details is used.
