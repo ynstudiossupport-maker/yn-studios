@@ -8,12 +8,28 @@ import { normalizeSettings } from "@/lib/normalize";
 import { siteSections, type FieldDef } from "@/lib/site-fields";
 import { safeColor } from "@/lib/color";
 
-const supabase = getBrowserSupabase();
+// Created defensively: a missing env var must show a setup message, not crash the page.
+const maybeSupabase = (() => {
+  try {
+    return getBrowserSupabase();
+  } catch {
+    return null;
+  }
+})();
+const supabase = maybeSupabase as NonNullable<typeof maybeSupabase>;
 type Tab = string;
 const blankProject: Project = { id:"", title:"", category:"Photography", year:new Date().getFullYear(), image_url:"", description:"", featured:false, sort_order:0 };
 const blankMember: Member = { id:"", name:"", role:"", image_url:"", bio:"", sort_order:0 };
 
 export default function AdminPage(){
+ if(!maybeSupabase)return <SetupNotice/>;
+ return <AdminApp/>}
+
+function SetupNotice(){return <main className="login-page"><div className="login-box setup-box"><h1>Admin not connected</h1><p>This site is missing its Supabase connection, so the admin can&apos;t sign you in.</p><ol><li>In Vercel open your project, then <b>Settings</b>, then <b>Environment Variables</b>.</li><li>Add <code>NEXT_PUBLIC_SUPABASE_URL</code> and <code>NEXT_PUBLIC_SUPABASE_ANON_KEY</code> (Supabase, then Project Settings, then API) for Production.</li><li><b>Redeploy</b> the project. These values are baked in at build time, so a redeploy is required.</li></ol><a href="/">Back to site</a></div></main>}
+
+function AdminApp(){
+ const [menuOpen,setMenuOpen]=useState(false);
+ useEffect(()=>{document.body.style.overflow=menuOpen?"hidden":"";return()=>{document.body.style.overflow=""}},[menuOpen]);
  const [session,setSession]=useState<any>(null),[loading,setLoading]=useState(true),[tab,setTab]=useState<Tab>("logo"),[message,setMessage]=useState(""),[settings,setSettings]=useState<SiteSettings>(defaultSettings),[projects,setProjects]=useState<Project[]>([]),[members,setMembers]=useState<Member[]>([]),[editingProject,setEditingProject]=useState<Project|null>(null),[editingMember,setEditingMember]=useState<Member|null>(null);
  useEffect(()=>{supabase.auth.getSession().then(({data})=>{setSession(data.session);setLoading(false);if(data.session)loadAll()});const {data:l}=supabase.auth.onAuthStateChange((_e,s)=>{setSession(s);if(s)loadAll()});return()=>l.subscription.unsubscribe()},[]);
  async function loadAll(){const [{data:s},{data:p},{data:m}]=await Promise.all([supabase.from("site_settings").select("content").eq("id","default").maybeSingle(),supabase.from("projects").select("*").order("sort_order"),supabase.from("members").select("*").order("sort_order")]);if(s?.content)setSettings(normalizeSettings(s.content as Record<string,unknown>));setProjects(p||[]);setMembers(m||[])}
@@ -27,9 +43,9 @@ export default function AdminPage(){
  if(!session)return <Login onLogin={login} message={message}/>;
  const section=siteSections.find(x=>x.id===tab);
  const groups=(["Branding","Homepage","More"] as const).map(g=>({g,items:siteSections.filter(x=>x.group===g)}));
- const goto=(id:string)=>{setTab(id);setMessage("")};
+ const goto=(id:string)=>{setTab(id);setMessage("");setMenuOpen(false);window.scrollTo({top:0})};
  const collection=tab==="projects"?"projects":tab==="members"?"members":null;
- return <div className="admin-shell"><aside className="admin-sidebar"><a href="/" className="admin-brand"><strong>YN</strong><span>STUDIOS / ADMIN</span></a><nav>{groups.map(({g,items})=><div className="nav-group" key={g}><p className="nav-heading">{g}</p>{items.map(x=><button className={tab===x.id?"active":""} key={x.id} onClick={()=>goto(x.id)}>{x.title}</button>)}</div>)}</nav><button className="admin-logout" onClick={()=>supabase.auth.signOut()}>Sign out</button></aside><main className="admin-main"><div className="admin-top"><div><p className="admin-kicker">{section?.group}</p><h1>{section?.title}</h1>{section&&<p className="admin-about">{section.about}</p>}</div><a href="/" target="_blank">View site</a></div>{message&&<div className="admin-message">{message}</div>}{section&&<SiteEditor sectionId={section.id} settings={settings} setSettings={setSettings} save={saveSettings} uploadImage={uploadImage}/>}{collection==="projects"&&<div className="collection-block"><h2 className="block-title">All projects</h2><Collection type="projects" items={projects} editing={editingProject} setEditing={setEditingProject} blank={blankProject} save={saveProject} remove={(id:string)=>remove("projects",id)} uploadImage={uploadImage}/></div>}{collection==="members"&&<div className="collection-block"><h2 className="block-title">All team members</h2><Collection type="members" items={members} editing={editingMember} setEditing={setEditingMember} blank={blankMember} save={saveMember} remove={(id:string)=>remove("members",id)} uploadImage={uploadImage}/></div>}</main></div>
+ return <div className="admin-shell"><header className="admin-mobilebar"><a href="/" className="admin-brand compact"><strong>YN</strong><span>ADMIN</span></a><span className="mobilebar-title">{section?.title}</span><button type="button" className="menu-toggle" aria-label={menuOpen?"Close menu":"Open menu"} aria-expanded={menuOpen} aria-controls="admin-sidebar" onClick={()=>setMenuOpen(o=>!o)}><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" aria-hidden>{menuOpen?<path d="M5 5l14 14M19 5L5 19"/>:<path d="M3 7h18M3 12h18M3 17h18"/>}</svg></button></header>{menuOpen&&<div className="admin-scrim" onClick={()=>setMenuOpen(false)}/>}<aside id="admin-sidebar" className={"admin-sidebar"+(menuOpen?" open":"")}><a href="/" className="admin-brand"><strong>YN</strong><span>STUDIOS / ADMIN</span></a><nav>{groups.map(({g,items})=><div className="nav-group" key={g}><p className="nav-heading">{g}</p>{items.map(x=><button className={tab===x.id?"active":""} key={x.id} onClick={()=>goto(x.id)}>{x.title}</button>)}</div>)}</nav><div className="admin-foot"><a className="admin-viewsite" href="/" target="_blank" rel="noopener noreferrer">View site</a><button className="admin-logout" onClick={()=>supabase.auth.signOut()}>Sign out</button></div></aside><main className="admin-main"><div className="admin-top"><div><p className="admin-kicker">{section?.group}</p><h1>{section?.title}</h1>{section&&<p className="admin-about">{section.about}</p>}</div><a href="/" target="_blank">View site</a></div>{message&&<div className="admin-message">{message}</div>}{section&&<SiteEditor sectionId={section.id} settings={settings} setSettings={setSettings} save={saveSettings} uploadImage={uploadImage}/>}{collection==="projects"&&<div className="collection-block"><h2 className="block-title">All projects</h2><Collection type="projects" items={projects} editing={editingProject} setEditing={setEditingProject} blank={blankProject} save={saveProject} remove={(id:string)=>remove("projects",id)} uploadImage={uploadImage}/></div>}{collection==="members"&&<div className="collection-block"><h2 className="block-title">All team members</h2><Collection type="members" items={members} editing={editingMember} setEditing={setEditingMember} blank={blankMember} save={saveMember} remove={(id:string)=>remove("members",id)} uploadImage={uploadImage}/></div>}</main></div>
 }
 function Login({onLogin,message}:{onLogin:(e:string,p:string)=>void;message:string}){const [e,setE]=useState(""),[p,setP]=useState("");return <main className="login-page"><div className="login-box"><p className="admin-kicker">YN Studios</p><h1>Admin</h1><p>Sign in to manage the website.</p><form onSubmit={x=>{x.preventDefault();onLogin(e,p)}}><input type="email" placeholder="Email" value={e} onChange={x=>setE(x.target.value)} required/><input type="password" placeholder="Password" value={p} onChange={x=>setP(x.target.value)} required/><button>Sign in</button></form>{message&&<small>{message}</small>}</div></main>}
 function SiteEditor({sectionId,settings,setSettings,save,uploadImage}:{sectionId:string;settings:SiteSettings;setSettings:(x:SiteSettings)=>void;save:()=>void;uploadImage:(f:File,folder:string)=>Promise<string>}){

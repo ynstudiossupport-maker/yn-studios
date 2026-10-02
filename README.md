@@ -40,7 +40,7 @@ When someone sends the contact form, a WhatsApp chat opens to your number with t
 
 ## Deployment
 
-Push the repository to GitHub and import it into Vercel. Add the two `NEXT_PUBLIC_*` environment variables in Vercel. Do not commit `.env.local`.
+Push the repository to GitHub and import it into Vercel. Add the two `NEXT_PUBLIC_*` environment variables in Vercel. Do not commit `.env.local`. These values are inlined at build time, so after adding or changing them in Vercel you must **redeploy**. Until they are set, the public site shows built-in demo content and `/admin` shows a setup message.
 
 ## Routes
 
