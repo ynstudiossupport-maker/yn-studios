@@ -23,7 +23,12 @@ export type Member = {
   sort_order?: number;
 };
 
-export type ServiceItem = { title: string; image_url: string };
+export type ServiceItem = {
+  title: string;
+  image_url: string;
+  /** Project category this card opens, e.g. "Photography". Empty shows all projects. */
+  category: string;
+};
 export type ClientItem = { name: string; logo_url: string };
 
 export type SiteSettings = {
@@ -76,6 +81,8 @@ export type SiteSettings = {
   projects_heading: string;
   projects_link_label: string;
   project_link_label: string;
+  projects_filter_all: string;
+  projects_empty_text: string;
   projects_page_heading: string;
   projects_page_cta: string;
 

@@ -317,6 +317,11 @@ h2 { font-size: clamp(28px, 2.8vw, 46px); }
 /* ---------- Subpages ---------- */
 .subpage { padding: 140px var(--edge) 90px; min-height: 80svh; }
 .subpage h1 { font-size: clamp(34px, 4.2vw, 64px); }
+.filter-bar { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 36px; }
+.filter { padding: 11px 20px; border: 1px solid var(--line); border-radius: 999px; color: var(--soft); font-size: 13px; transition: color 0.2s ease, border-color 0.2s ease, background 0.2s ease; }
+.filter:hover { border-color: var(--accent); color: var(--accent); }
+.filter.active { background: var(--accent); border-color: var(--accent); color: var(--on-accent); font-weight: 500; }
+.empty-note { margin-top: 56px; color: var(--muted); font-size: 15px; }
 .card-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 36px 16px; margin-top: 48px; }
 
 /* ---------- Contact dialog ---------- */

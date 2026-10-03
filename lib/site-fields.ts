@@ -82,7 +82,7 @@ export const siteSections: SectionDef[] = [
       { key: "services_heading", label: "Heading", type: "text" },
       { key: "services_intro", label: "Intro", type: "textarea" },
       { key: "services_link_label", label: "Link text", type: "text" },
-      { key: "service_items", label: "Service cards", type: "services" },
+      { key: "service_items", label: "Service cards", type: "services", hint: "Clicking a card opens the projects page filtered to its category. The category must match the Category you give a project in Admin → Projects." },
     ],
   },
   {
@@ -109,6 +109,8 @@ export const siteSections: SectionDef[] = [
       { key: "project_link_label", label: "Text shown on clickable project cards", type: "text", hint: "Clear it to hide the text. Cards with a project link are still clickable." },
       { key: "projects_page_heading", label: "“All projects” page heading", type: "text" },
       { key: "projects_page_cta", label: "“All projects” page link", type: "text" },
+      { key: "projects_filter_all", label: "Filter button for every project", type: "text" },
+      { key: "projects_empty_text", label: "Message when a category has no projects", type: "text" },
     ],
   },
   {

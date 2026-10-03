@@ -35,10 +35,10 @@ export const defaultSettings: SiteSettings = {
   services_link_label: "Explore All Services",
   services_intro: "A blend of creativity and strategy to help brands grow in the digital world.",
   service_items: [
-    { title: "Photography", image_url: u("photo-1516035069371-29a1b244cc32", 900) },
-    { title: "Reels & Video Production", image_url: u("photo-1536440136628-849c177e76a1", 900) },
-    { title: "Meta Ads & Digital Marketing", image_url: u("photo-1611162617213-7d7a39e9b1d7", 900) },
-    { title: "Website Development", image_url: u("photo-1498050108023-c5249f4df085", 900) },
+    { title: "Photography", category: "Photography", image_url: u("photo-1516035069371-29a1b244cc32", 900) },
+    { title: "Reels & Video Production", category: "Reels", image_url: u("photo-1536440136628-849c177e76a1", 900) },
+    { title: "Meta Ads & Digital Marketing", category: "Meta Ads", image_url: u("photo-1611162617213-7d7a39e9b1d7", 900) },
+    { title: "Website Development", category: "Websites", image_url: u("photo-1498050108023-c5249f4df085", 900) },
   ],
 
   show_banner: true,
@@ -50,6 +50,8 @@ export const defaultSettings: SiteSettings = {
   projects_heading: "Projects",
   projects_link_label: "View All Projects",
   project_link_label: "View project",
+  projects_filter_all: "All",
+  projects_empty_text: "No projects in this category yet.",
   projects_page_heading: "All projects",
   projects_page_cta: "Start a project",
 

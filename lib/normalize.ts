@@ -11,6 +11,13 @@ export function normalizeSettings(stored: Record<string, unknown> = {}): SiteSet
   s.clients = arr(s.clients).map((c: any) =>
     typeof c === "string" ? { name: c, logo_url: "" } : { name: String(c?.name ?? ""), logo_url: String(c?.logo_url ?? "") }
   );
-  s.service_items = arr(s.service_items).map((c: any) => ({ title: String(c?.title ?? ""), image_url: String(c?.image_url ?? "") }));
+  const guess = (title: string) =>
+    /photo/i.test(title) ? "Photography" : /reel|video|film/i.test(title) ? "Reels" : /meta|ads|market/i.test(title) ? "Meta Ads" : /web|site|develop/i.test(title) ? "Websites" : "";
+  s.service_items = arr(s.service_items).map((c: any) => {
+    const title = String(c?.title ?? "");
+    // Cards saved before categories existed: infer one from the title (blank stays blank).
+    const category = typeof c?.category === "string" ? c.category : guess(title);
+    return { title, image_url: String(c?.image_url ?? ""), category };
+  });
   return s;
 }

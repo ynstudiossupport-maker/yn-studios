@@ -77,7 +77,7 @@ export default async function Home() {
             </div>
             {s.services_intro && <p className="section-lead">{s.services_intro}</p>}
             {s.services_link_label && (
-              <a className="text-link" href="#contact">
+              <a className="text-link" href="/projects">
                 {s.services_link_label}
               </a>
             )}
@@ -86,7 +86,7 @@ export default async function Home() {
             <ul className="service-grid">
               {s.service_items.map((item, i) => (
                 <li key={`${item.title}-${i}`}>
-                  <a className="service-card" href="#contact">
+                  <a className="service-card" href={item.category ? `/projects?category=${encodeURIComponent(item.category)}` : "/projects"}>
                     <span className="service-card-media">
                       {item.image_url && <img src={item.image_url} alt="" loading="lazy" />}
                     </span>

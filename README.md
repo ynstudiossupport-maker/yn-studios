@@ -43,6 +43,10 @@ alter table public.projects add column if not exists video_url text;
 alter table public.projects add column if not exists link_url text;
 ```
 
+## Services open matching projects
+
+Each service card (Admin → Services) has a **Project category it opens**, e.g. `Photography`. Clicking the card opens `/projects?category=Photography`, which lists only projects whose **Category** (Admin → Projects) is `Photography`. Matching ignores upper/lower case. The projects page also has filter buttons for every category, plus "All". Cards left without a category open the full project list.
+
 ## Clickable projects
 
 Each project can have a **Project link** (the live site, an Instagram reel, a YouTube video, a Drive folder, etc.). Cards with a link are clickable, open it in a new tab and show a "View project" text (editable under Admin → Projects). Cards without a link are not clickable. A project can have an image, a hover video, or both; with a video only, the video's first frame is used as the thumbnail. On touch screens the video previews play automatically while the card is mostly in view.
