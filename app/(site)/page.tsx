@@ -133,7 +133,7 @@ export default async function Home() {
         </div>
         <Carousel label={s.projects_heading || "Projects"} className="projects-carousel">
           {shown.map((project, index) => (
-            <ProjectCard key={project.id} project={project} priority={index < 2} />
+            <ProjectCard key={project.id} project={project} priority={index < 2} linkLabel={s.project_link_label} />
           ))}
         </Carousel>
       </section>

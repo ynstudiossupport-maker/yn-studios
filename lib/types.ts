@@ -6,6 +6,8 @@ export type Project = {
   image_url: string;
   /** Optional preview clip (mp4/webm file URL or a YouTube link) that plays on hover. */
   video_url?: string | null;
+  /** Where the card goes when clicked: the live project, reel, video, website... */
+  link_url?: string | null;
   /** Short subtitle shown under the title, e.g. "Fragrance Brand". */
   description?: string | null;
   featured?: boolean;
@@ -73,6 +75,7 @@ export type SiteSettings = {
   projects_eyebrow: string;
   projects_heading: string;
   projects_link_label: string;
+  project_link_label: string;
   projects_page_heading: string;
   projects_page_cta: string;
 

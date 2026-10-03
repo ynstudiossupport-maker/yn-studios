@@ -10,11 +10,13 @@ create table if not exists public.projects (
   year integer not null default extract(year from now()), image_url text not null,
   description text, featured boolean not null default false, sort_order integer not null default 0,
   video_url text,
+  link_url text,
   created_at timestamptz not null default now()
 );
 
 -- Existing databases: adds the optional hover-preview video column.
 alter table public.projects add column if not exists video_url text;
+alter table public.projects add column if not exists link_url text;
 
 create table if not exists public.members (
   id uuid primary key default gen_random_uuid(), name text not null, role text not null,

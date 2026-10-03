@@ -242,6 +242,13 @@ h2 { font-size: clamp(28px, 2.8vw, 46px); }
 .carousel-arrow:hover:not(:disabled) { background: var(--accent); color: var(--on-accent); }
 .carousel-arrow:disabled { opacity: 0.25; cursor: default; }
 
+.project-card-link { display: block; color: inherit; }
+.project-card.is-linked .project-card-link { cursor: pointer; }
+.project-card-media video.no-poster { opacity: 1; z-index: 0; }
+.project-link-label { display: inline-block; margin-top: 10px; padding-bottom: 2px; border-bottom: 1px solid var(--line-strong); color: var(--soft); font-size: 12px; letter-spacing: 0.02em; transition: color 0.2s ease, border-color 0.2s ease; }
+.project-card.is-linked:hover .project-link-label, .project-card-link:focus-visible .project-link-label { color: var(--accent); border-color: var(--accent); }
+.project-card.is-linked .project-card-media { transition: box-shadow 0.25s ease; }
+.project-card.is-linked:hover .project-card-media { box-shadow: 0 0 0 1px var(--accent); }
 .project-card h3, .member-card h3 { margin-top: 14px; font-size: 13px; font-weight: 500; letter-spacing: 0.005em; }
 .project-card p, .member-card p { margin-top: 3px; color: var(--muted); font-size: 12px; }
 .project-card-media, .member-card-media { position: relative; overflow: hidden; border-radius: 2px; background: var(--bg-3); }
@@ -447,10 +454,8 @@ h2 { font-size: clamp(28px, 2.8vw, 46px); }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .clients { -webkit-mask-image: none; mask-image: none; }
-  .marquee { width: 100%; justify-content: center; }
-  .marquee-group { flex-wrap: wrap; justify-content: center; }
-  .marquee-group.copy, .marquee .dup { display: none; }
   html { scroll-behavior: auto; }
-  *, *::before, *::after { animation: none !important; transition: none !important; }
+  /* The brands marquee keeps scrolling (slower, and it pauses on hover); everything else stops animating. */
+  *:not(.marquee), *::before, *::after { animation: none !important; transition: none !important; }
+  .marquee { animation-duration: calc(var(--marquee-duration, 36s) * 1.8); }
 }

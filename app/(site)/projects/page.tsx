@@ -22,7 +22,7 @@ export default async function ProjectsPage() {
       </div>
       <div className="card-grid">
         {projects.map((project, index) => (
-          <ProjectCard key={project.id} project={project} priority={index < 4} />
+          <ProjectCard key={project.id} project={project} priority={index < 4} linkLabel={s.project_link_label} />
         ))}
       </div>
     </main>

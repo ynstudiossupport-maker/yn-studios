@@ -106,6 +106,7 @@ export const siteSections: SectionDef[] = [
       { key: "projects_eyebrow", label: "Small label", type: "text" },
       { key: "projects_heading", label: "Heading", type: "text" },
       { key: "projects_link_label", label: "Link text", type: "text" },
+      { key: "project_link_label", label: "Text shown on clickable project cards", type: "text", hint: "Clear it to hide the text. Cards with a project link are still clickable." },
       { key: "projects_page_heading", label: "“All projects” page heading", type: "text" },
       { key: "projects_page_cta", label: "“All projects” page link", type: "text" },
     ],

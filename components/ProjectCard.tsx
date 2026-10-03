@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import type { Project } from "@/lib/types";
+import { normalizeLink } from "@/lib/links";
 import { Play } from "./Icons";
 
 const looksLikeVideo = (category: string) => /reel|video|film/i.test(category);
@@ -13,16 +14,19 @@ export function youtubeId(url?: string | null) {
   return m ? m[1] : null;
 }
 
-export default function ProjectCard({ project, priority = false }: { project: Project; priority?: boolean }) {
+type Props = { project: Project; priority?: boolean; linkLabel?: string };
+
+export default function ProjectCard({ project, priority = false, linkLabel = "" }: Props) {
   const media = useRef<HTMLDivElement>(null);
   const video = useRef<HTMLVideoElement>(null);
-  const pointer = useRef("mouse");
   const [active, setActive] = useState(false);
   const [playing, setPlaying] = useState(false);
 
   const yt = youtubeId(project.video_url);
   const hasVideo = Boolean(project.video_url);
+  const hasImage = Boolean(project.image_url);
   const showBadge = hasVideo || looksLikeVideo(project.category);
+  const link = normalizeLink(project.link_url);
 
   const start = () => {
     setActive(true);
@@ -38,57 +42,42 @@ export default function ProjectCard({ project, priority = false }: { project: Pr
     }
   };
 
-  // Hover (mouse only) plays the preview; reduced-motion users must tap/click instead.
-  const onEnter = () => {
-    if (pointer.current !== "mouse") return;
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    start();
-  };
-
-  // Touch / pen: tap toggles the preview.
-  const onClick = () => {
-    if (!hasVideo) return;
-    if (pointer.current === "mouse") return;
-    active ? stop() : start();
-  };
-
-  // Stop previews that scroll out of view (matters on touch devices).
+  // Touch screens have no hover, so previews play while the card is mostly on screen.
+  // Mouse users get hover (below). Reduced-motion users never get autoplay.
   useEffect(() => {
     const el = media.current;
     if (!el || !hasVideo) return;
-    const io = new IntersectionObserver(([entry]) => {
-      if (!entry.isIntersecting) stop();
-    }, { threshold: 0.2 });
+    if (!window.matchMedia("(hover: none)").matches) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const io = new IntersectionObserver(([entry]) => (entry.isIntersecting ? start() : stop()), { threshold: 0.6 });
     io.observe(el);
     return () => io.disconnect();
   }, [hasVideo]);
 
-  return (
-    <article className="project-card">
-      <div
-        ref={media}
-        className={`project-card-media${hasVideo ? " has-video" : ""}${playing ? " is-playing" : ""}`}
-        tabIndex={hasVideo ? 0 : undefined}
-        aria-label={hasVideo ? `${project.title} — preview video` : undefined}
-        onPointerDown={(e) => { pointer.current = e.pointerType; }}
-        onPointerEnter={hasVideo ? onEnter : undefined}
-        onPointerLeave={hasVideo ? () => { if (pointer.current === "mouse") stop(); } : undefined}
-        // Keyboard focus previews the clip; pointer focus (tap / click) must not, or a tap would toggle twice.
-        onFocus={hasVideo ? (e) => { if (e.currentTarget.matches(":focus-visible")) start(); } : undefined}
-        onBlur={hasVideo ? stop : undefined}
-        onClick={onClick}
-      >
-        <img src={project.image_url} alt={project.title} loading={priority ? "eager" : "lazy"} />
+  const onEnter = (e: React.PointerEvent) => {
+    if (e.pointerType !== "mouse") return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    start();
+  };
+  const onLeave = (e: React.PointerEvent) => {
+    if (e.pointerType === "mouse") stop();
+  };
+
+  const body = (
+    <>
+      <div ref={media} className={`project-card-media${hasVideo ? " has-video" : ""}${playing ? " is-playing" : ""}`}>
+        {hasImage && <img src={project.image_url} alt={project.title} loading={priority ? "eager" : "lazy"} />}
 
         {hasVideo && !yt && (
           <video
             ref={video}
-            src={project.video_url!}
-            poster={project.image_url}
+            src={hasImage ? project.video_url! : `${project.video_url}#t=0.1`}
+            poster={hasImage ? project.image_url : undefined}
             muted
             loop
             playsInline
-            preload="none"
+            preload={hasImage ? "none" : "metadata"}
+            className={hasImage ? undefined : "no-poster"}
             onPlaying={() => setPlaying(true)}
             aria-hidden
           />
@@ -112,6 +101,35 @@ export default function ProjectCard({ project, priority = false }: { project: Pr
       </div>
       <h3>{project.title}</h3>
       {project.description && <p>{project.description}</p>}
+      {link && linkLabel && <span className="project-link-label">{linkLabel}</span>}
+      {link?.external && <span className="sr-only"> (opens in a new tab)</span>}
+    </>
+  );
+
+  const handlers = {
+    onPointerEnter: hasVideo ? onEnter : undefined,
+    onPointerLeave: hasVideo ? onLeave : undefined,
+    // Keyboard focus previews the clip; pointer focus must not.
+    onFocus: hasVideo ? (e: React.FocusEvent<HTMLElement>) => { if (e.currentTarget.matches(":focus-visible")) start(); } : undefined,
+    onBlur: hasVideo ? stop : undefined,
+  };
+
+  return (
+    <article className={`project-card${link ? " is-linked" : ""}`}>
+      {link ? (
+        <a
+          className="project-card-link"
+          href={link.href}
+          {...(link.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+          {...handlers}
+        >
+          {body}
+        </a>
+      ) : (
+        <div className="project-card-link" tabIndex={hasVideo ? 0 : undefined} {...handlers}>
+          {body}
+        </div>
+      )}
     </article>
   );
 }

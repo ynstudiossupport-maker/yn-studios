@@ -49,6 +49,7 @@ export const defaultSettings: SiteSettings = {
   projects_eyebrow: "Featured work",
   projects_heading: "Projects",
   projects_link_label: "View All Projects",
+  project_link_label: "View project",
   projects_page_heading: "All projects",
   projects_page_cta: "Start a project",
 

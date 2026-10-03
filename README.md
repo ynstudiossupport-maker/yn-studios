@@ -40,7 +40,12 @@ In **Admin → Projects**, edit a project and use **Hover video** to upload a sh
 
 ```sql
 alter table public.projects add column if not exists video_url text;
+alter table public.projects add column if not exists link_url text;
 ```
+
+## Clickable projects
+
+Each project can have a **Project link** (the live site, an Instagram reel, a YouTube video, a Drive folder, etc.). Cards with a link are clickable, open it in a new tab and show a "View project" text (editable under Admin → Projects). Cards without a link are not clickable. A project can have an image, a hover video, or both; with a video only, the video's first frame is used as the thumbnail. On touch screens the video previews play automatically while the card is mostly in view.
 
 ## Enquiries via WhatsApp
 
