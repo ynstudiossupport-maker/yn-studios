@@ -43,6 +43,10 @@ alter table public.projects add column if not exists video_url text;
 alter table public.projects add column if not exists link_url text;
 ```
 
+## Services strip
+
+Services appear as a compact set of still, clickable pills (4 across on desktop, 2 across on tablets and phones, plain CSS grid, no animation). Only the brands strip slides.
+
 ## Services open matching projects
 
 Each service card (Admin → Services) has a **Project category it opens**, e.g. `Photography`. Clicking the card opens `/projects?category=Photography`, which lists only projects whose **Category** (Admin → Projects) is `Photography`. Matching ignores upper/lower case. The projects page also has filter buttons for every category, plus "All". Cards left without a category open the full project list.

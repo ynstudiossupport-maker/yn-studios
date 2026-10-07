@@ -3,6 +3,7 @@ import ContactDialog from "@/components/ContactDialog";
 import { MemberCard, ProjectCard } from "@/components/Cards";
 import { ArrowDown } from "@/components/Icons";
 import Logo from "@/components/Logo";
+import Marquee from "@/components/Marquee";
 import { getMembers, getProjects, getSiteSettings } from "@/lib/data";
 
 export const dynamic = "force-dynamic";
@@ -13,8 +14,6 @@ export default async function Home() {
   const featured = projects.filter((project) => project.featured);
   const shown = featured.length ? featured : projects.slice(0, 8);
   const clients = s.clients.filter((client) => client.name || client.logo_url);
-  // Repeat the set so one marquee group is always wider than the screen (seamless loop).
-  const marqueeReps = Math.max(2, Math.ceil(12 / Math.max(1, clients.length)));
 
   return (
     <main>
@@ -51,23 +50,16 @@ export default async function Home() {
       {s.show_clients && clients.length > 0 && (
         <section className="clients" aria-label="Brands we have worked with">
           <p className="sr-only">{clients.map((client) => client.name).filter(Boolean).join(", ")}</p>
-          <div className="marquee" aria-hidden style={{ ["--marquee-duration" as string]: `${Math.max(24, clients.length * marqueeReps * 3)}s` }}>
-            {[0, 1].map((copy) => (
-              <ul className={`marquee-group${copy ? " copy" : ""}`} key={copy}>
-                {Array.from({ length: marqueeReps }, (_, rep) =>
-                  clients.map((client, i) => (
-                    <li key={`${rep}-${i}`} className={rep || copy ? "dup" : undefined}>
-                      {client.logo_url ? <img src={client.logo_url} alt="" loading="lazy" /> : client.name}
-                    </li>
-                  ))
-                )}
-              </ul>
-            ))}
+          <div aria-hidden>
+            <Marquee
+              items={clients}
+              render={(client) => (client.logo_url ? <img src={client.logo_url} alt="" loading="lazy" /> : client.name)}
+            />
           </div>
         </section>
       )}
 
-      {/* Services */}
+      {/* Services: compact, still pills; each one opens its projects */}
       {s.show_services && (
         <section id="services" className="services" aria-label={s.services_heading || "Services"}>
           <div className="section-head">
@@ -83,14 +75,12 @@ export default async function Home() {
             )}
           </div>
           {s.service_items.length > 0 && (
-            <ul className="service-grid">
+            <ul className="service-list">
               {s.service_items.map((item, i) => (
                 <li key={`${item.title}-${i}`}>
-                  <a className="service-card" href={item.category ? `/projects?category=${encodeURIComponent(item.category)}` : "/projects"}>
-                    <span className="service-card-media">
-                      {item.image_url && <img src={item.image_url} alt="" loading="lazy" />}
-                    </span>
-                    <span className="service-card-label">{item.title}</span>
+                  <a className="service-chip" href={item.category ? `/projects?category=${encodeURIComponent(item.category)}` : "/projects"}>
+                    {item.image_url && <img src={item.image_url} alt="" loading="lazy" />}
+                    <span>{item.title}</span>
                   </a>
                 </li>
               ))}

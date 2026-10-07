@@ -82,7 +82,7 @@ export const siteSections: SectionDef[] = [
       { key: "services_heading", label: "Heading", type: "text" },
       { key: "services_intro", label: "Intro", type: "textarea" },
       { key: "services_link_label", label: "Link text", type: "text" },
-      { key: "service_items", label: "Service cards", type: "services", hint: "Clicking a card opens the projects page filtered to its category. The category must match the Category you give a project in Admin → Projects." },
+      { key: "service_items", label: "Service cards", type: "services", hint: "Each card is a small pill with a round image, so a square image works best. Clicking one opens the projects page filtered to its category. The category must match the Category you give a project in Admin → Projects." },
     ],
   },
   {
